@@ -1,12 +1,10 @@
 # BoxBot
-#### BotBox is a wrapper that lets you create and add you commands to a discord bot. BotBox uses Discord.Net
+#### BotBox is a wrapper that lets you create and add you commands to a discord bot using Discord.Net and DI
 
-This guide assumes that you already know how to [create and use your commands and services](https://discord.foxbot.me/stable/guides/commands/intro.html) 
-and how to use delegates.
+This guide assumes that you already know how to [create and use your commands](https://discord.foxbot.me/stable/guides/commands/intro.html) and how to use delegates.
 
 
 ## How to use BoxBot
-
 ### 1. We need a box
 ```csharp
 var services = Box.GetEssentials(true);
@@ -16,35 +14,29 @@ var box = new Box(services.BuildServiceProvider());
 ```
 #### What is GetEssentials?
 GetEssensials returns the services that the bot needs to be able to run. The function accepts a true or false argument that 
-says whether to add the default implementations for IConfiguration and IDiscordLogger.
+says whether to add the default implementations for IConfiguration, IDiscordLogger and ICommandHandler.
+
 
 
 ### 2. Configuring the bot
 #### Bot configuration
-You can change the configuration that the bot will have using box.Config
+You can change the configuration that the bot will have using box.Config or bot.Configuration
 ```csharp
-box.Config.ClientType = ClientType.Socket;
-box.Config.DiscordToken = GetToken();
-```
-
-#### Client configuration
-You can also pass the client configuration you want to have 
-```csharp
-box.SetDiscordSocketConfig(new DiscordSocketConfig()
+private static void ConfigureBot(Bot bot)
 {
-  WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance,
-  LogLevel = Discord.LogSeverity.Info
-});
+  bot.Configuration.ClientType = ClientType.Socket;
+  bot.Configuration.DiscordToken = File.ReadAllText("token.txt");
+  bot.DiscordSocketConfig = new DiscordSocketConfig()
+  {
+    // I use windows server 2008 so I need WS4Net
+    WebSocketProvider = Discord.Net.Providers.WS4Net.WS4NetProvider.Instance,
+    LogLevel = Discord.LogSeverity.Verbose
+  };
+}
 ```
 
-#### Adding commands
-To add commands use AddCommandModulesAsync()
-```csharp
-Assembly commands; // Assembly that contains the commands
-await box.AddCommandModulesAsync(commands);
-```
 
-### 3. Starting the bot
+### 3. Managing the bot
 The bot has simple managemnt functions
 ```csharp
 box.StartAsync();
@@ -53,33 +45,69 @@ box.Restart();
 ```
 
 
-## Custom handling
-### Custom command handling
-To have control on your commands you can write your own handling functions and pass them like this
+
+## Custom commands, handlers and services
+### Creating a custom command handler
 ```csharp
-box.SetOnMessageRecieved(new OnMessageRecieved(YourFunction));
+class CommandHandler : ICommandHandler
+{
+  // You need a CommandService for your commands
+  private CommandService commandService;
+  // clientManager will contain your client
+  private IClientManager clientManager;
+  // This one contains you services
+  private IServiceProvider services;
+
+  public CommandHandler(IClientManager clientManager, IServiceProvider services)
+  {
+    this.clientManager = clientManager;
+    this.services = services;
+    commandService = new CommandService();
+  }
+
+  public async Task Initialize()
+  {
+    // Set handlers
+    var client = (DiscordSocketClient)clientManager.Client;
+    client.MessageReceived += HandleCommandAsync;
+    commandService.CommandExecuted += OnCommandExecuted;
+    commandService.Log += LogAsync;
+    
+    // Add your commands
+    await commandService.AddModulesAsync(...,services);
+  }
+  
+  private async Task HandleCommandAsync(SocketMessage s)
+  {
+    // Check for commands and run them if needed
+    ...
+  }
+}
 ```
-[Here](https://discord.foxbot.me/stable/guides/commands/post-execution.html) is a detailed guide on how to do this
+[Here](https://discord.foxbot.me/stable/guides/commands/post-execution.html) is a detailed guide on how to create your custom 
+handlers
+
+[Here](https://github.com/Liviu23/BoxBot/blob/master/ConsoleUI/CommandHandler.cs) is my implementation of ICommandHandler
 
 
-box.SetOnMessageRecieved() is for the HandleCommandAsync function
 
-box.SetOnCommandExecuted() is for [CommandExecuted Event](https://discord.foxbot.me/stable/guides/commands/post-execution.html#commandexecuted-event)
+### Using your custom handler and services
+This is a bit harder but it's still simple
+```csharp
+IServiceCollection services = SetServices();
+Box box = new Box(services.BuildServiceProvider());
 
-box.SetOnExceptionCatched() is for [CommandService.Log Event](https://discord.foxbot.me/stable/guides/commands/post-execution.html#commandservicelog-event)
+
+private static IServiceCollection SetServices()
+  // This will let us set our own implementations
+  => Box.GetEssentials(false)
+  // These can be the same (If you are to lazy to change them)
+  .AddSingleton<IConfiguration, BotConfiguration>()
+  .AddSingleton<IDiscordLogger, ConsoleLogger>()
+  // However, this is your custom handler. 
+  .AddSingleton<ICommandHandler, CommandHandler>()
+  // Add other services
+  .AddCustomServices();
+```
 
 By default, the prefix is the @mention and if an error is encountered it tries to send the error reason to the channel
-
-### Adding TypeReaders
-To add TypeReaders you need to use AddTypeReaders delegate and SetTypeReaders() function
-```csharp
-void AddCustomTypeReaders(CommandService service)
-{
-  // Add your TypeReaders
-  service.AddTypeReader(...);
-  ...
-}
-
-// Provide a function that adds you TypeReaders
-box.SetTypeReaders(new AddTypeReaders(AddCustomTypeReaders));
-```
