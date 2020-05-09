@@ -29,7 +29,7 @@ namespace ConsoleUI
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;
             await commandService.AddModulesAsync(Assembly.GetExecutingAssembly(),services);
-
+            
             if (!(clientManager.Client is DiscordSocketClient client))
                 return;
             client.MessageReceived += HandleCommandAsync;

@@ -27,7 +27,7 @@ namespace BoxBot.Discord
                 await clientManager.InitializeClientAsync(discordSocketConfig);
                 var bClient = clientManager.Client as BaseSocketClient;
                 bClient.Log += discordLogger.Log;
-                commandHandler.Initialize();
+                await commandHandler.Initialize();
                 await bClient.StartAsync();
                 await Task.Delay(-1, token);
             }
