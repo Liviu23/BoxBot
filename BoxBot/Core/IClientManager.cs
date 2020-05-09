@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace BoxBot.Core
 {
-    internal interface IClientManager
+    public interface IClientManager
     {
         IDiscordClient Client { get; }
         IConfiguration Config { get; }

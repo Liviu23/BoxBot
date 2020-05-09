@@ -1,6 +1,6 @@
 ﻿namespace BoxBot.Core
 {
-    internal interface IDiscordLogger
+    public interface IDiscordLogger
     {
         void LogCritical(string message);
         void LogError(string message);

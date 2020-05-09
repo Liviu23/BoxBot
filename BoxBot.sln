@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoxBot", "BoxBot\BoxBot.csproj", "{BBA28694-1937-4903-8E27-1886E6B8A09C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoxBot", "BoxBot\BoxBot.csproj", "{BBA28694-1937-4903-8E27-1886E6B8A09C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{C092ACB5-D743-4664-8F86-CF385CE3989A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{1169C3FF-F8A3-4D0B-BBEC-E5A0804845CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{BBA28694-1937-4903-8E27-1886E6B8A09C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBA28694-1937-4903-8E27-1886E6B8A09C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBA28694-1937-4903-8E27-1886E6B8A09C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C092ACB5-D743-4664-8F86-CF385CE3989A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C092ACB5-D743-4664-8F86-CF385CE3989A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C092ACB5-D743-4664-8F86-CF385CE3989A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C092ACB5-D743-4664-8F86-CF385CE3989A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1169C3FF-F8A3-4D0B-BBEC-E5A0804845CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1169C3FF-F8A3-4D0B-BBEC-E5A0804845CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1169C3FF-F8A3-4D0B-BBEC-E5A0804845CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1169C3FF-F8A3-4D0B-BBEC-E5A0804845CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

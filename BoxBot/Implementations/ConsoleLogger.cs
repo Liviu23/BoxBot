@@ -3,7 +3,7 @@ using System;
 
 namespace BoxBot.Implementations
 {
-    internal class ConsoleLogger : IDiscordLogger
+    public class ConsoleLogger : IDiscordLogger
     {
         public void ColoredLog(string message, ConsoleColor color = ConsoleColor.Gray)
         {

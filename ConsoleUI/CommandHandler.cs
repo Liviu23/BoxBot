@@ -1,15 +1,17 @@
 ﻿using BoxBot.Core;
-using BoxBot.Discord.SampleCommands;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace BBox.Discord
+namespace ConsoleUI
 {
-    internal class CommandHandler : ICommandHandler
+    public class CommandHandler : ICommandHandler
     {
         private CommandService commandService;
         private IClientManager clientManager;
@@ -26,18 +28,11 @@ namespace BBox.Discord
         {
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;
+            await commandService.AddModulesAsync(Assembly.GetExecutingAssembly(),services);
 
-            if (clientManager.Client is DiscordSocketClient socket)
-            {
-                socket.MessageReceived += HandleCommandAsync;
-                await commandService.AddModuleAsync<SocketCommands>(services);
-            }
-            else if (clientManager.Client is DiscordShardedClient sharded)
-            {
-                sharded.MessageReceived += HandleCommandAsync;
-                await commandService.AddModuleAsync<ShardedCommands>(services);
-            }
-            else throw new Exception("Discord client was not recognized");
+            if (!(clientManager.Client is DiscordSocketClient client))
+                return;
+            client.MessageReceived += HandleCommandAsync;
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
@@ -50,15 +45,11 @@ namespace BBox.Discord
             var argPos = 0;
             if (msg.HasMentionPrefix(clientManager.Client.CurrentUser, ref argPos))
             {
-                ICommandContext context = null;
-                if (clientManager.Client is DiscordSocketClient socketClient)
-                    context = new SocketCommandContext(socketClient, msg);
-                else if (clientManager.Client is DiscordShardedClient shardedClient)
-                    context = new ShardedCommandContext(shardedClient, msg);
+                ICommandContext context = new SocketCommandContext((clientManager.Client as DiscordSocketClient), msg);
 
                 if (!commandService.Search(context, argPos).IsSuccess)
                 {
-                    await context.Channel.SendMessageAsync("Command not found");
+                    await context.Channel.SendMessageAsync("Command not found! (¯―¯)");
                     return;
                 }
 
@@ -82,6 +73,5 @@ namespace BBox.Discord
                 await cmdEx.Context.Channel.SendMessageAsync($"**Something went extremely bad:**\n{cmdEx.Message}");
             }
         }
-
     }
 }

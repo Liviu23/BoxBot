@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>BotBox is a wrapper that lets you create and add you commands to a discord bot. BotBox uses Discord.Net</Description>
+    <Authors>Liviu23</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Liviu23/BoxBot</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Liviu23/BoxBot</RepositoryUrl>
+    <PackageTags>Discord, Discord.Net</PackageTags>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

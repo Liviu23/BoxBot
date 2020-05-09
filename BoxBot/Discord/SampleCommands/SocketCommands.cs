@@ -1,10 +1,12 @@
 ﻿using Discord.Commands;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace BoxBot.Discord.SampleCommands
 {
-    public class Commands : ModuleBase<SocketCommandContext>
+    internal class SocketCommands : ModuleBase<SocketCommandContext>
     {
         [Command("echo", RunMode = RunMode.Async)]
         [Alias("say")]
