@@ -5,7 +5,6 @@ This guide assumes that you already know how to [create and use your commands](h
 
 
 ## How to use BoxBot
-
 ### 1. We need a box
 ```csharp
 var services = Box.GetEssentials(true);
@@ -18,9 +17,10 @@ GetEssensials returns the services that the bot needs to be able to run. The fun
 says whether to add the default implementations for IConfiguration, IDiscordLogger and ICommandHandler.
 
 
+
 ### 2. Configuring the bot
 #### Bot configuration
-You can change the configuration that the bot will have using box.Config
+You can change the configuration that the bot will have using box.Config or bot.Configuration
 ```csharp
 private static void ConfigureBot(Bot bot)
 {
@@ -34,7 +34,7 @@ private static void ConfigureBot(Bot bot)
   };
 }
 ```
-By default, the prefix is the @mention and if an error is encountered it tries to send the error reason to the channel
+
 
 ### 3. Managing the bot
 The bot has simple managemnt functions
@@ -43,6 +43,7 @@ box.StartAsync();
 box.Stop();
 box.Restart();
 ```
+
 
 
 ## Custom commands, handlers and services
@@ -89,6 +90,7 @@ handlers
 [Here](https://github.com/Liviu23/BoxBot/blob/master/ConsoleUI/CommandHandler.cs) is my implementation of ICommandHandler
 
 
+
 ### Using your custom handler and services
 This is a bit harder but it's still simple
 ```csharp
@@ -107,3 +109,5 @@ private static IServiceCollection SetServices()
   // Add other services
   .AddCustomServices();
 ```
+
+By default, the prefix is the @mention and if an error is encountered it tries to send the error reason to the channel
