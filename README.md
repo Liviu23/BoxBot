@@ -1,7 +1,11 @@
 # BoxBot
 #### BotBox is a wrapper that lets you create and add you commands to a discord bot using Discord.Net and DI
 
-This guide assumes that you already know how to [create and use your commands](https://discord.foxbot.me/stable/guides/commands/intro.html) and how to use delegates.
+This guide assumes that you already know how to [create and use your commands](https://discord.foxbot.me/stable/guides/commands/intro.html).
+
+
+## Available on nuget.org
+https://www.nuget.org/packages/BoxBot/
 
 
 ## How to use BoxBot
