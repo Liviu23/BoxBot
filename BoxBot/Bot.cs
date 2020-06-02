@@ -10,8 +10,14 @@ namespace BoxBot
     {
         public IConfiguration Configuration { get; set; }
         private IDiscordConnection DiscordConnection { get; set; }
+        /// <summary>
+        /// Client will use this configuration when logging in
+        /// </summary>
         public DiscordSocketConfig DiscordSocketConfig { get; set; }
         private CancellationTokenSource Source { get; set; }
+        /// <summary>
+        /// Returns whether the bot is running or not
+        /// </summary>
         public bool IsRunning { get; private set; }
 
         public Bot(IConfiguration configuration, IDiscordConnection discordConnection)
@@ -22,15 +28,18 @@ namespace BoxBot
 
         public async Task StartAsync()
         {
+            if (IsRunning)
+                return;
+
+            IsRunning = true;
             Source = new CancellationTokenSource();
             try
             {
-                IsRunning = true;
                 await DiscordConnection.RunAsync(Source.Token, DiscordSocketConfig);
             }
             catch (OperationCanceledException ocex)
             {
-                if (!Source.IsCancellationRequested)
+                if (!Source.IsCancellationRequested || ocex.CancellationToken != Source.Token)
                     ExceptionCatched?.Invoke(this, ocex);
             }
             catch (Exception ex)
@@ -57,7 +66,7 @@ namespace BoxBot
             if (Source != null)
                 Source.CancelAfter(delay);
         }
-        public async Task Restart()
+        public async Task RestartAsync()
         {
             Stop();
             await StartAsync();

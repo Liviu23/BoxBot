@@ -3,16 +3,14 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleUI
 {
     public class CommandHandler : ICommandHandler
     {
+        private DiscordSocketClient Client;
         private CommandService commandService;
         private IClientManager clientManager;
         private IServiceProvider services;
@@ -24,15 +22,15 @@ namespace ConsoleUI
             commandService = new CommandService();
         }
 
-        public async Task Initialize()
+        public async Task InitializeAsync()
         {
+            if (!(clientManager.Client is DiscordSocketClient Client))
+                throw new Exception("The command handler requires a socket client.");
+
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;
             await commandService.AddModulesAsync(Assembly.GetExecutingAssembly(),services);
-            
-            if (!(clientManager.Client is DiscordSocketClient client))
-                return;
-            client.MessageReceived += HandleCommandAsync;
+            clientManager.Client.MessageReceived += HandleCommandAsync;
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
@@ -45,11 +43,11 @@ namespace ConsoleUI
             var argPos = 0;
             if (msg.HasMentionPrefix(clientManager.Client.CurrentUser, ref argPos))
             {
-                ICommandContext context = new SocketCommandContext((clientManager.Client as DiscordSocketClient), msg);
+                ICommandContext context = new SocketCommandContext(Client, msg);
 
                 if (!commandService.Search(context, argPos).IsSuccess)
                 {
-                    await context.Channel.SendMessageAsync("Command not found! (¯―¯)");
+                    //await context.Channel.SendMessageAsync("Command not found! (¯―¯)");
                     return;
                 }
 

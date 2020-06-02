@@ -1,5 +1,6 @@
 ﻿using BoxBot.Core;
 using Discord;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BoxBot.Discord
@@ -7,10 +8,12 @@ namespace BoxBot.Discord
     internal class DiscordLogger
     {
         IDiscordLogger logger;
+        StringBuilder builder;
 
         public DiscordLogger(IDiscordLogger logger)
         {
             this.logger = logger;
+            builder = new StringBuilder();
         }
 
         internal Task Log(LogMessage msg)
@@ -18,26 +21,36 @@ namespace BoxBot.Discord
             switch (msg.Severity)
             {
                 case LogSeverity.Critical:
-                    logger.LogCritical(msg.Message);
+                    logger.LogCritical(GetStringFromLogMessage(msg));
                     break;
                 case LogSeverity.Error:
-                    logger.LogError(msg.Message);
+                    logger.LogError(GetStringFromLogMessage(msg));
                     break;
                 case LogSeverity.Warning:
-                    logger.LogWarning(msg.Message);
+                    logger.LogWarning(GetStringFromLogMessage(msg));
                     break;
                 case LogSeverity.Info:
-                    logger.LogInfo(msg.Message);
+                    logger.LogInfo(GetStringFromLogMessage(msg));
                     break;
                 case LogSeverity.Verbose:
-                    logger.LogVerbose(msg.Message);
+                    logger.LogVerbose(GetStringFromLogMessage(msg));
                     break;
                 case LogSeverity.Debug:
-                    logger.LogDebug(msg.Message);
+                    logger.LogDebug(GetStringFromLogMessage(msg));
                     break;
             }
             return Task.CompletedTask;
         }
+
+        private string GetStringFromLogMessage(LogMessage msg) 
+        {
+            builder.Clear();
+            builder.Append($"{msg.Message} | From: {msg.Source}");
+            if (msg.Exception != null)
+                builder.Append($"\n{msg.Exception.Message}");
+            return builder.ToString();
+        }
     }
 }
+
 

@@ -8,7 +8,11 @@ namespace BoxBot.Discord
 {
     internal class ClientManager : IClientManager
     {
-        public IDiscordClient Client { get; private set; }
+        /// <summary>
+        /// The Discord client
+        /// </summary>
+        public BaseSocketClient Client { get; private set; }
+
         public IConfiguration Config { get; private set; }
 
         public ClientManager(IConfiguration configuration)
@@ -16,12 +20,6 @@ namespace BoxBot.Discord
             Config = configuration;
         }
 
-        /// <summary>
-        /// Creates and logs in a new instance of a client
-        /// </summary>
-        /// <param name="Token">Bot's login token</param>
-        /// <param name="config"></param>
-        /// <returns></returns>
         public async Task InitializeClientAsync(DiscordSocketConfig config = null)
         {
             if (config == null)
@@ -37,12 +35,9 @@ namespace BoxBot.Discord
                 default:
                     throw new Exception("Configuration does not contain a recognized client type");
             }
-            await (Client as BaseSocketClient).LoginAsync(TokenType.Bot, Config.DiscordToken);
+            await Client.LoginAsync(TokenType.Bot, Config.DiscordToken);
         }
 
-        /// <summary>
-        /// Disposes the client
-        /// </summary>
         public void DisposeOfClient() => Client = null;
     }
 }

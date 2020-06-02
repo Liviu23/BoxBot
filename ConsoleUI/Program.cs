@@ -4,14 +4,8 @@ using BoxBot.Entities;
 using BoxBot.Implementations;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleUI
 {
@@ -23,6 +17,7 @@ namespace ConsoleUI
             Box box = new Box(services.BuildServiceProvider());
 
             ConfigureBot(box.Bot);
+            box.Bot.ExceptionCatched += Bot_ExceptionCatched;
 
             // Start the bot
             // Exit when bot is stopped
@@ -38,10 +33,14 @@ namespace ConsoleUI
             }
         }
 
+        private static void Bot_ExceptionCatched(object sender, Exception e)
+        {
+            Console.WriteLine($"{e.Message}\n{e.StackTrace}");
+        }
 
         private static void ConfigureBot(Bot bot)
         {
-            bot.Configuration.ClientType = ClientType.Socket;
+            bot.Configuration.ClientType = ClientType.Sharded;
             bot.Configuration.DiscordToken = File.ReadAllText("token.txt");
             bot.DiscordSocketConfig = new DiscordSocketConfig()
             {

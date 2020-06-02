@@ -1,12 +1,11 @@
 ﻿using Discord.Commands;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BoxBot.Discord.SampleCommands
 {
-    internal class ShardedCommands : ModuleBase<ShardedCommandContext>
+    /*
+    public class ShardedCommands : ModuleBase<ShardedCommandContext>
     {
         [Command("echo", RunMode = RunMode.Async)]
         [Alias("say")]
@@ -22,4 +21,5 @@ namespace BoxBot.Discord.SampleCommands
             await ReplyAsync(new Random().Next(minVal, maxVal).ToString());
         }
     }
+    */
 }

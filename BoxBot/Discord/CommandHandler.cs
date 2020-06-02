@@ -4,13 +4,14 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BBox.Discord
 {
     internal class CommandHandler : ICommandHandler
     {
+        private DiscordSocketClient Client;
         private CommandService commandService;
         private IClientManager clientManager;
         private IServiceProvider services;
@@ -22,39 +23,34 @@ namespace BBox.Discord
             commandService = new CommandService();
         }
 
-        public async Task Initialize()
+        public async Task InitializeAsync()
         {
+            if (!(clientManager.Client is DiscordSocketClient Client))
+                throw new Exception("The default command handler requires a socket client. I recomend using your own custom command handler.");
+
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;
-
-            if (clientManager.Client is DiscordSocketClient socket)
-            {
-                socket.MessageReceived += HandleCommandAsync;
-                await commandService.AddModuleAsync<SocketCommands>(services);
-            }
-            else if (clientManager.Client is DiscordShardedClient sharded)
-            {
-                sharded.MessageReceived += HandleCommandAsync;
-                await commandService.AddModuleAsync<ShardedCommands>(services);
-            }
-            else throw new Exception("Discord client was not recognized");
+            await commandService.AddModulesAsync(Assembly.GetExecutingAssembly(),services);
+            clientManager.Client.MessageReceived += HandleCommandAsync;
         }
 
         private async Task HandleCommandAsync(SocketMessage s)
         {
             if (!(s is SocketUserMessage msg))
-            {
                 return;
-            }
+
+            if (msg.Author.IsBot)
+                return;
 
             var argPos = 0;
             if (msg.HasMentionPrefix(clientManager.Client.CurrentUser, ref argPos))
             {
-                ICommandContext context = null;
-                if (clientManager.Client is DiscordSocketClient socketClient)
-                    context = new SocketCommandContext(socketClient, msg);
-                else if (clientManager.Client is DiscordShardedClient shardedClient)
-                    context = new ShardedCommandContext(shardedClient, msg);
+                //ICommandContext context = null;
+                //if (clientManager.Client is DiscordSocketClient socketClient)
+                //    context = new SocketCommandContext(socketClient, msg);
+                //else if (clientManager.Client is DiscordShardedClient shardedClient)
+                //    context = new ShardedCommandContext(shardedClient, msg);
+                ICommandContext context = new SocketCommandContext(Client, msg);
 
                 if (!commandService.Search(context, argPos).IsSuccess)
                 {

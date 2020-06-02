@@ -4,6 +4,6 @@ namespace BoxBot.Core
 {
     public interface ICommandHandler
     {
-        Task Initialize();
+        Task InitializeAsync();
     }
 }

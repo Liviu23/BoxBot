@@ -25,32 +25,31 @@ namespace BoxBot.Discord
             try
             {
                 await clientManager.InitializeClientAsync(discordSocketConfig);
-                var bClient = clientManager.Client as BaseSocketClient;
-                bClient.Log += discordLogger.Log;
-                await commandHandler.Initialize();
-                await bClient.StartAsync();
+                clientManager.Client.Log += discordLogger.Log;
+                await commandHandler.InitializeAsync();
+                await clientManager.Client.StartAsync();
                 await Task.Delay(-1, token);
             }
             catch (OperationCanceledException ocex)
             {
-                if (!token.IsCancellationRequested)
+                if (!token.IsCancellationRequested || ocex.CancellationToken != token)
+                {
                     await LogRunException(ocex);
+                    throw ocex;
+                }
             }
             catch (Exception ex)
             {
                 await LogRunException(ex);
+                throw ex;
             }
             finally
             {
-                var bClient = clientManager.Client as BaseSocketClient;
-                if (bClient != null)
-                {
-                    await bClient.LogoutAsync();
-                    clientManager.DisposeOfClient();
-                }
+                await clientManager.Client?.LogoutAsync();
+                clientManager.DisposeOfClient();
             }
         }
 
-        private async Task LogRunException(Exception ex) => await discordLogger.Log(new LogMessage(LogSeverity.Critical, typeof(DiscordConnection).GetMethod("RunAsync").Name, "Something went wrong while running the bot. Here is attached an exception", ex));
+        private async Task LogRunException(Exception ex) => await discordLogger.Log(new LogMessage(LogSeverity.Critical, ex.Source, "Something went wrong while running the bot. Here is attached an exception", ex));
     }
 }

@@ -1,19 +1,24 @@
 ﻿using Discord.WebSocket;
-using Discord;
 using System.Threading.Tasks;
 
 namespace BoxBot.Core
 {
     public interface IClientManager
     {
-        IDiscordClient Client { get; }
+        /// <summary>
+        /// The Discord client
+        /// </summary>
+        BaseSocketClient Client { get; }
+
+        /// <summary>
+        /// The bot configuration
+        /// </summary>
         IConfiguration Config { get; }
 
         /// <summary>
         /// Creates and logs in a new instance of a client
         /// </summary>
-        /// <param name="Token">Bot's login token</param>
-        /// <param name="config"></param>
+        /// <param name="config">Configuration used by client when logging in</param>
         /// <returns></returns>
         Task InitializeClientAsync(DiscordSocketConfig config = null);
 
