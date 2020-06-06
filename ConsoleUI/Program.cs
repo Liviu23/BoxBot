@@ -15,21 +15,30 @@ namespace ConsoleUI
         {
             IServiceCollection services = SetServices();
             Box box = new Box(services.BuildServiceProvider());
-
-            ConfigureBot(box.Bot);
-            box.Bot.ExceptionCatched += Bot_ExceptionCatched;
-
-            // Start the bot
-            // Exit when bot is stopped manually
-            box.Bot.StartAsync();
-            while (true)
+            
+            try
             {
-                switch (Console.ReadLine())
+                ConfigureBot(box.Bot);
+                box.Bot.ExceptionCatched += Bot_ExceptionCatched;
+
+                // Start the bot
+                // Exit when bot is stopped manually
+                box.Bot.StartAsync();
+                while (true)
                 {
-                    case "exit":
-                        box.Bot.Stop();
-                        return;
+                    switch (Console.ReadLine())
+                    {
+                        case "exit":
+                            box.Bot.Stop();
+                            return;
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"{ex.Message}\n{ex.StackTrace}");
+                if (box.Bot != null)
+                    box.Bot.Stop();
             }
         }
 
@@ -37,10 +46,11 @@ namespace ConsoleUI
         {
             Console.WriteLine($"{e.Message}\n{e.StackTrace}");
         }
-
+        
         private static void ConfigureBot(Bot bot)
         {
             bot.Configuration.ClientType = ClientType.Socket;
+            //bot.Configuration.TokenType = Discord.TokenType.Bot;
             bot.Configuration.DiscordToken = File.ReadAllText("token.txt");
             bot.DiscordSocketConfig = new DiscordSocketConfig()
             {
