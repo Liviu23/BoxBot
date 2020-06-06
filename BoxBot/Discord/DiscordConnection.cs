@@ -11,9 +11,9 @@ namespace BoxBot.Discord
     {
         IClientManager clientManager;
         ICommandHandler commandHandler;
-        DiscordLogger discordLogger;
+        IDiscordLogger discordLogger;
 
-        public DiscordConnection(IClientManager clientManager, ICommandHandler commandHandler, DiscordLogger discordLogger)
+        public DiscordConnection(IClientManager clientManager, ICommandHandler commandHandler, IDiscordLogger discordLogger)
         {
             this.clientManager = clientManager;
             this.commandHandler = commandHandler;
@@ -50,6 +50,6 @@ namespace BoxBot.Discord
             }
         }
 
-        private async Task LogRunException(Exception ex) => await discordLogger.Log(new LogMessage(LogSeverity.Critical, ex.Source, "Something went wrong while running the bot. Here is attached an exception", ex));
+        private Task LogRunException(Exception ex) => discordLogger.Log(new LogMessage(LogSeverity.Critical, ex.Source, "Something went wrong while running the bot. Here is attached an exception", ex));
     }
 }

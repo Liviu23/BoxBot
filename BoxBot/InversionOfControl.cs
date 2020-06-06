@@ -10,8 +10,7 @@ namespace BoxBot
     {
         public static IServiceCollection AddDiscordEssentials(this IServiceCollection services)
             => services.AddSingleton<IClientManager, ClientManager>()
-               .AddSingleton<IDiscordConnection, DiscordConnection>()
-               .AddSingleton<DiscordLogger>();
+               .AddSingleton<IDiscordConnection, DiscordConnection>();
 
         public static IServiceCollection AddDefaults(this IServiceCollection services)
             => services.AddSingleton<IConfiguration, BotConfiguration>()

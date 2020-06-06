@@ -25,8 +25,9 @@ namespace BBox.Discord
 
         public async Task InitializeAsync()
         {
-            if (!(clientManager.Client is DiscordSocketClient Client))
+            if (!(clientManager.Client is DiscordSocketClient))
                 throw new Exception("The default command handler requires a socket client. I recomend using your own custom command handler.");
+            Client = (DiscordSocketClient)clientManager.Client;
 
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;

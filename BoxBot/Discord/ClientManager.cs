@@ -35,7 +35,7 @@ namespace BoxBot.Discord
                 default:
                     throw new Exception("Configuration does not contain a recognized client type");
             }
-            await Client.LoginAsync(TokenType.Bot, Config.DiscordToken);
+            await Client.LoginAsync(Config.TokenType, Config.DiscordToken);
         }
 
         public void DisposeOfClient() => Client = null;

@@ -24,8 +24,9 @@ namespace ConsoleUI
 
         public async Task InitializeAsync()
         {
-            if (!(clientManager.Client is DiscordSocketClient Client))
+            if (!(clientManager.Client is DiscordSocketClient))
                 throw new Exception("The command handler requires a socket client.");
+            Client = (DiscordSocketClient)clientManager.Client;
 
             commandService.CommandExecuted += OnCommandExecuted;
             commandService.Log += LogAsync;

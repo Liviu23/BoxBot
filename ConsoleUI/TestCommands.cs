@@ -14,7 +14,6 @@ namespace ConsoleUI
         }
 
         [Command("random", RunMode = RunMode.Async), Alias("rand")]
-
         public async Task GetRandomNumber(int maxVal, int minVal = 0)
         {
             await ReplyAsync(new Random().Next(minVal, maxVal).ToString());
