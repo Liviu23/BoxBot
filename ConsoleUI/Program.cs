@@ -40,7 +40,7 @@ namespace ConsoleUI
 
         private static void ConfigureBot(Bot bot)
         {
-            bot.Configuration.ClientType = ClientType.Sharded;
+            bot.Configuration.ClientType = ClientType.Socket;
             bot.Configuration.DiscordToken = File.ReadAllText("token.txt");
             bot.DiscordSocketConfig = new DiscordSocketConfig()
             {
