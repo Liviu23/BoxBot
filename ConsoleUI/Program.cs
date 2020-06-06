@@ -20,7 +20,7 @@ namespace ConsoleUI
             box.Bot.ExceptionCatched += Bot_ExceptionCatched;
 
             // Start the bot
-            // Exit when bot is stopped
+            // Exit when bot is stopped manually
             box.Bot.StartAsync();
             while (true)
             {
